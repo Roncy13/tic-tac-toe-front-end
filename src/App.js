@@ -24,7 +24,6 @@ export default class App extends Component {
     this.stateName = this.stateName.bind(this);
 
     this.initialize(); 
-    this.receivedPlacement();
 
     this.state.socket.on("disconnect", () => {
       this.state.socket.emit("removePlayer", { room: this.state.room })
@@ -41,8 +40,10 @@ export default class App extends Component {
     this.sendRoomValue = this.sendRoomValue.bind(this);
     
     this.state.socket = io.connect("http://localhost:4001/game");
+
     this.state.socket.on('connect', () => { 
       console.log("Connected Successfully");
+      this.receivedPlacement();
     });
   }
   
@@ -50,7 +51,6 @@ export default class App extends Component {
     this.setState({
       placeChip
     });
-    //this.state.socket.emit("placeChip", { chip: this.room });
   }
 
   sendChip() {
@@ -62,6 +62,10 @@ export default class App extends Component {
   receivedPlacement() {
     this.state.socket.on("receivedRoom", (payload) => {
       console.log(payload);
+    });
+    
+    this.state.socket.on("players", (payload) => {
+      console.log("players", payload);
     });
   }
 
