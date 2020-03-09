@@ -43,8 +43,8 @@ export default class App extends Component {
 
     this.state.socket.on('connect', () => { 
       console.log("Connected Successfully");
-      this.receivedPlacement();
     });
+    this.receivedPlacement();
   }
   
   placeChip({ target: { value: placeChip } }) {
