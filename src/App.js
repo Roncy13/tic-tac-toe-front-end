@@ -61,11 +61,19 @@ export default class App extends Component {
 
   receivedPlacement() {
     this.state.socket.on("receivedRoom", (payload) => {
-      console.log(payload);
+      console.log("receivedRooms ", payload);
     });
-    
+
     this.state.socket.on("players", (payload) => {
-      console.log("players", payload);
+      console.log("players ", payload);
+    });
+
+    this.state.socket.on("message", (payload) => {
+      console.log("message ", payload);
+    });
+
+    this.state.socket.on("receivedChips", (payload) => {
+      console.log("receivedChips ", payload);
     });
   }
 
