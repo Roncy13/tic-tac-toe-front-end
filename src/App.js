@@ -27,7 +27,7 @@ export default class App extends Component {
     this.stateName = this.stateName.bind(this);
     this.renderGame = this.renderGame.bind(this);
     this.resetState = this.resetState.bind(this);
-
+    this.checkPlayerSymbol = this.checkPlayerSymbol.bind(this);
     this.renderListOfPlayers = this.renderListOfPlayers.bind(this);
   }
 
@@ -104,11 +104,24 @@ export default class App extends Component {
     });
 
     this.state.socket.on("receivedChips", (payload) => {
-      console.log("receivedChips ", payload);
+      const { games: game, turn } = payload;
+
+      this.setState({
+        game,
+        turn
+      });
     });
 
     this.state.socket.on("winner", (payload) => {
-      console.log("winner ", payload);
+      const { winner, score } = payload;
+
+      if (this.state.name === winner) {
+        toast.success(`You Win the Game, Your Score is ${score}`);
+      } else {
+        toast.error(`You Lose...!`);
+      }
+
+      this.resetState();
     });
   }
 
@@ -158,6 +171,17 @@ export default class App extends Component {
     </table>
   )
 
+  checkPlayerSymbol(player, number) {
+    
+    if (player === "PlayerOne") {
+      return "X";
+    } else if (player === "PlayerTwo") {
+      return "O";
+    } else {
+      return `${number}`;
+    }
+  }
+
   renderGame() {
 
     const game = this.state.game;
@@ -166,19 +190,19 @@ export default class App extends Component {
       <table className="table w-25">
         <tbody>
           <tr>
-            <td>{ game[1] || 1 }</td>
-            <td>{ game[2] || 2 }</td>
-            <td>{ game[3] || 3 }</td>
+            <td>{ this.checkPlayerSymbol(game[1],1) || 1 }</td>
+            <td>{ this.checkPlayerSymbol(game[2],2) || 2 }</td>
+            <td>{ this.checkPlayerSymbol(game[3],3) || 3 }</td>
           </tr>
           <tr>
-            <td>{ game[4] || 4 }</td>
-            <td>{ game[5] || 5 }</td>
-            <td>{ game[6] || 6 }</td>
+            <td>{ this.checkPlayerSymbol(game[4],4) || 4 }</td>
+            <td>{ this.checkPlayerSymbol(game[5],5) || 5 }</td>
+            <td>{ this.checkPlayerSymbol(game[6],6) || 6 }</td>
           </tr>
           <tr>
-            <td>{ game[7] || 7 }</td>
-            <td>{ game[8] || 8 }</td>
-            <td>{ game[9] || 9 }</td>
+            <td>{ this.checkPlayerSymbol(game[7],7) || 7 }</td>
+            <td>{ this.checkPlayerSymbol(game[8],8) || 8 }</td>
+            <td>{ this.checkPlayerSymbol(game[9],9) || 9 }</td>
           </tr>
         </tbody>
       </table>
@@ -194,17 +218,26 @@ export default class App extends Component {
         <table className="table w-25">
           <tbody>
             { 
-              (playerLength > 0) &&
+              ("PlayerOne" in players) &&
                 <tr>
                   <td>Player One</td>
                   <td>{ players.PlayerOne.playerName }</td>
+                  <td>X</td>
                 </tr>
             }
             { 
-              (playerLength > 1) &&
+              ("PlayerTwo" in players) &&
                 <tr>
                   <td>Player Two</td>
                   <td>{ players.PlayerTwo.playerName }</td>
+                  <td>O</td>
+                </tr>
+            }
+            { 
+              (playerLength === 2) &&
+                <tr>
+                  <td>Players Turn</td>
+                  <td>{ this.state.turn || "" }</td>
                 </tr>
             }
           </tbody>
