@@ -6,6 +6,25 @@ import 'react-toastify/dist/ReactToastify.css';
 import PlayerListing from './components/PlayerListing';
 import GameBoard from './components/GameBoard/GameBoard';
 
+import Modal from 'react-modal';
+import axios from 'axios';
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)',
+    width: '50%',
+    height: '100%'
+  }
+};
+ 
+// Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
+Modal.setAppElement('#root')
+
 export default class App extends Component {
   state = {
     socket: {},
@@ -14,7 +33,9 @@ export default class App extends Component {
     placeChip: "",
     name: "",
     players: {},
-    turn: ""
+    turn: "",
+    modalIsOpen: false,
+    scores: []
   }
 
   constructor() {
@@ -32,6 +53,7 @@ export default class App extends Component {
     this.sendChip = this.sendChip.bind(this);
     this.stateName = this.stateName.bind(this);
     this.resetState = this.resetState.bind(this);
+    this.openModal = this.openModal.bind(this);
   }
 
   resetState() {
@@ -159,6 +181,16 @@ export default class App extends Component {
   componentWillMount() {
     this.initialize();
   }
+
+  openModal() {
+    axios.get('http://localhost:3000/tic-tac-toe')
+      .then(({ data }) => {
+        this.setState({
+          modalIsOpen: true,
+          scores: data || []
+        });
+      });
+  }
   
   render() {
 
@@ -169,6 +201,10 @@ export default class App extends Component {
       <div className="App row w-100">
         <div className = "col-lg-12 col-md-12 mx-5 mt-2">
           <ToastContainer />
+        </div>
+
+        <div className = "col-lg-12 col-md-12 mx-5 mt-2 d-flex">
+          <button className = "btn btn-info btn-md" onClick = { this.openModal }>Show Scores</button>
         </div>
         
         <div className = "col-lg-12 col-md-12 mx-5 mt-2">
@@ -204,6 +240,56 @@ export default class App extends Component {
         <div className = "col-lg-12 col-md-12 mt-3 d-flex justify-content-center">
           <GameBoard game = { game }/>
         </div>
+
+        <div className = "col-lg-12 col-md-12 mt-3 d-flex justify-content-center">
+          <Modal
+            isOpen={this.state.modalIsOpen}
+            style={customStyles}
+            contentLabel="Game Scores"
+          > 
+            <div className="col-lg-12 col-md-12 mt-3 d-flex justify-content-center">
+              <h3>High Scores</h3>
+            </div>
+            
+            <div className="col-lg-12 col-md-12 mt-3 d-flex justify-content-end">
+              <button className = "btn btn-danger btn-sm" onClick={ () => this.setState({ modalIsOpen: false })}>X</button>
+            </div>
+
+            <div className="col-lg-12 col-md-12 mt-3">
+              <table className="table w-100">
+                <thead>
+                  <tr>
+                    <th class = "th"></th>
+                    <th class = "th">
+                      Name
+                    </th>
+                    <th class = "th">
+                      Score
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    this.state.scores.map((row, index) => (
+                      <tr key = { row._id } >
+                        <td>
+                          { index + 1 }
+                        </td>
+                        <td>
+                          { row.winner}
+                        </td>
+                        <td>
+                          { row.score}
+                        </td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
+          </Modal>
+        </div>
+
       </div>
     );
   } 

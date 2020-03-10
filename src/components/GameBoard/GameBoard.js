@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import DefaultTable from "./DefaultTable";
 import GameTable from "./GameTable";
+import "./Game.css";
 
 export default class GameBoard extends Component {
 
