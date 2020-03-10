@@ -54,6 +54,9 @@ export default class App extends Component {
     this.stateName = this.stateName.bind(this);
     this.resetState = this.resetState.bind(this);
     this.openModal = this.openModal.bind(this);
+    this.sendRoomValue = this.sendRoomValue.bind(this);
+
+    this.initialize();
   }
 
   resetState() {
@@ -64,6 +67,8 @@ export default class App extends Component {
       placeChip: "",
       players: {},
       turn: ""
+    }, () => {
+      this.setInitialize();
     });
   }
 
@@ -74,8 +79,6 @@ export default class App extends Component {
   }
 
   initialize() {
-    this.sendRoomValue = this.sendRoomValue.bind(this);
-    
     this.setState({
       socket: io.connect("http://localhost:4001/game")
     }, () => {
@@ -138,6 +141,12 @@ export default class App extends Component {
         game,
         turn
       });
+    });
+
+    this.state.socket.on("draw", () => {
+      this.state.socket.emit("removePlayer", { room: this.state.room })
+      this.resetState();
+      toast.info("Game is draw");
     });
 
     this.state.socket.on("winner", (payload) => {
