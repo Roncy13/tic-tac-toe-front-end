@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PlayerListing from './components/PlayerListing';
+import GameBoard from './components/GameBoard/GameBoard';
 
 export default class App extends Component {
   state = {
@@ -19,6 +20,10 @@ export default class App extends Component {
   constructor() {
     super();
   
+    this.setInitialize();
+  }
+
+  setInitialize() {
     this.initialize = this.initialize.bind(this);
     this.addNumber = this.addNumber.bind(this);
     this.receivedPlacement = this.receivedPlacement.bind(this);
@@ -26,10 +31,7 @@ export default class App extends Component {
     this.placeChip = this.placeChip.bind(this);
     this.sendChip = this.sendChip.bind(this);
     this.stateName = this.stateName.bind(this);
-    this.renderGame = this.renderGame.bind(this);
     this.resetState = this.resetState.bind(this);
-    this.checkPlayerSymbol = this.checkPlayerSymbol.bind(this);
-    this.renderListOfPlayers = this.renderListOfPlayers.bind(this);
   }
 
   resetState() {
@@ -149,109 +151,11 @@ export default class App extends Component {
   componentWillMount() {
     this.initialize();
   }
-
-  renderTable = () => (
-    <table className="table w-25">
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>2</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>5</td>
-          <td>6</td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>8</td>
-          <td>9</td>
-        </tr>
-      </tbody>
-    </table>
-  )
-
-  checkPlayerSymbol(player, number) {
-    
-    if (player === "PlayerOne") {
-      return "X";
-    } else if (player === "PlayerTwo") {
-      return "O";
-    } else {
-      return `${number}`;
-    }
-  }
-
-  renderGame() {
-
-    const game = this.state.game;
-
-    return (
-      <table className="table w-25">
-        <tbody>
-          <tr>
-            <td>{ this.checkPlayerSymbol(game[1],1) || 1 }</td>
-            <td>{ this.checkPlayerSymbol(game[2],2) || 2 }</td>
-            <td>{ this.checkPlayerSymbol(game[3],3) || 3 }</td>
-          </tr>
-          <tr>
-            <td>{ this.checkPlayerSymbol(game[4],4) || 4 }</td>
-            <td>{ this.checkPlayerSymbol(game[5],5) || 5 }</td>
-            <td>{ this.checkPlayerSymbol(game[6],6) || 6 }</td>
-          </tr>
-          <tr>
-            <td>{ this.checkPlayerSymbol(game[7],7) || 7 }</td>
-            <td>{ this.checkPlayerSymbol(game[8],8) || 8 }</td>
-            <td>{ this.checkPlayerSymbol(game[9],9) || 9 }</td>
-          </tr>
-        </tbody>
-      </table>
-    );
-  }
-
-  renderListOfPlayers() {
-    const players = this.state.players;
-    const playerLength = Object.keys(players).length;
-
-    return (
-       playerLength > 0 ? 
-        <table className="table w-25">
-          <tbody>
-            { 
-              ("PlayerOne" in players) &&
-                <tr>
-                  <td>Player One</td>
-                  <td>{ players.PlayerOne.playerName }</td>
-                  <td>X</td>
-                </tr>
-            }
-            { 
-              ("PlayerTwo" in players) &&
-                <tr>
-                  <td>Player Two</td>
-                  <td>{ players.PlayerTwo.playerName }</td>
-                  <td>O</td>
-                </tr>
-            }
-            { 
-              (playerLength === 2) &&
-                <tr>
-                  <td>Players Turn</td>
-                  <td>{ this.state.turn || "" }</td>
-                </tr>
-            }
-          </tbody>
-      </table> :
-      <table></table>
-    );
-
-  }
-
+  
   render() {
 
-    const Table = Object.keys(this.state.game).length === 0 ? this.renderTable : this.renderGame;
-    const { turn, players } = this.state;
+    const { turn, players, game } = this.state;
+
     return (
       <div className="App">
         <ToastContainer />
@@ -278,9 +182,8 @@ export default class App extends Component {
 
         <br />
         <br />
-        {
-          Table()
-        }
+
+        <GameBoard  game = { game }/>
 
       </div>
     );

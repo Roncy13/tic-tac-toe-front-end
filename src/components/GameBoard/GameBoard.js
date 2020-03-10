@@ -1,26 +1,12 @@
-import { Component } from "react";
+import React, { Component } from "react";
+import DefaultTable from "./DefaultTable";
+import GameTable from "./GameTable";
 
 export default class GameBoard extends Component {
-  
-  renderDefaultTable = () => (
-    <table className="table w-25">
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>2</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>5</td>
-          <td>6</td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>8</td>
-          <td>9</td>
-        </tr>
-      </tbody>
-    </table>
-  )
+
+  render() {
+    const RenderTable = Object.keys(this.props.game || {}).length > 0 ? GameTable : DefaultTable;
+
+    return <RenderTable games = { this.props.game }/>
+  }
 }

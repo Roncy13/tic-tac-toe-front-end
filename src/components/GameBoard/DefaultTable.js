@@ -1,5 +1,7 @@
-export const DefaultTable = () => (
-  <table className="table w-25">
+import React from "react";
+
+export default function DefaultTable () {
+  return (<table className="table w-25">
     <tbody>
       <tr>
         <td>1</td>
@@ -17,5 +19,5 @@ export const DefaultTable = () => (
         <td>9</td>
       </tr>
     </tbody>
-  </table>
-);
+  </table>);
+}
