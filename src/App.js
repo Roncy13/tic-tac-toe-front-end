@@ -3,6 +3,7 @@ import './App.css';
 import io from 'socket.io-client';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PlayerListing from './components/PlayerListing';
 
 export default class App extends Component {
   state = {
@@ -250,8 +251,7 @@ export default class App extends Component {
   render() {
 
     const Table = Object.keys(this.state.game).length === 0 ? this.renderTable : this.renderGame;
-    const Players = this.renderListOfPlayers;
-
+    const { turn, players } = this.state;
     return (
       <div className="App">
         <ToastContainer />
@@ -274,9 +274,7 @@ export default class App extends Component {
         <br />
         <br />
 
-        {
-          Players()
-        }
+        <PlayerListing players={ players } turn = { turn }/>
 
         <br />
         <br />
