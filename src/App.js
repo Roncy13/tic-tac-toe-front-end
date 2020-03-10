@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PlayerListing from './components/PlayerListing';
 import GameBoard from './components/GameBoard/GameBoard';
-
+import { isEmpty } from 'lodash';
 import Modal from 'react-modal';
 import axios from 'axios';
 
@@ -176,6 +176,18 @@ export default class App extends Component {
   sendRoomValue() {
     const { room, name } = this.state;
 
+    if (isEmpty(room)) {
+      toast.error("Room is Empty...!");
+      return;
+    }
+
+    if (isEmpty(name)) {
+      toast.error("Name is Empty...!");
+      return;
+    }
+
+
+
     this.state.socket.emit("createdRoom", { room, name });
   }
 
@@ -189,6 +201,16 @@ export default class App extends Component {
     const {
       name, room
     } = this.state;
+
+    if (isEmpty(room)) {
+      toast.error("Room is Empty...!");
+      return;
+    }
+
+    if (isEmpty(name)) {
+      toast.error("Name is Empty...!");
+      return;
+    }
 
     this.state.socket.emit("joinRoom", { room, name });
   }
