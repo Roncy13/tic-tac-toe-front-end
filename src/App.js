@@ -119,14 +119,19 @@ export default class App extends Component {
     });
 
     this.state.socket.on("winner", (payload) => {
-      const { winner, score } = payload;
+      const { winner, score } = payload,
+        { players } = this.state,
+        playerTypes = Object.keys(players || {}),
+        findPlayer = playerTypes.find(row => players[row].playerName === winner);
+
+      toast.success(`${ findPlayer === 'PlayerOne' ? 'Player 1' : 'Player 2' } wins`);
 
       if (this.state.name === winner) {
-        toast.success(`You Win the Game, Your Score is ${score}`);
+        toast.success(`Your Score is ${score}`);
       } else {
-        toast.error(`You Lose...!`);
+        toast.error(`You Lose The Game...!`);
       }
-
+      
       this.resetState();
     });
   }
