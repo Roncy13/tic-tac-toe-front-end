@@ -35,7 +35,8 @@ export default class App extends Component {
     players: {},
     turn: "",
     modalIsOpen: false,
-    scores: []
+    scores: [],
+    chips: ["1","2","3","4","5","6","7","8","9"]
   }
 
   constructor() {
@@ -101,6 +102,11 @@ export default class App extends Component {
 
   sendChip() {
     const { room, placeChip, socket } = this.state;
+
+    if (!this.state.chips.includes(placeChip)) {
+      toast.error("Only Chips 1-9 are allowed");
+      return;
+    }
 
     socket.emit("placeChip", { room, placeChip });
 
@@ -234,7 +240,7 @@ export default class App extends Component {
 
           <div className={ checkGames > 0 ? 'form-group' : 'd-none' }>
             <label for="placeChip">Place Chip from 1 - 9</label>
-            <input id = "placeChip"  value = {this.state.placeChip} className = "form-control" type = "text" onChange = { this.placeChip } ></input>
+            <input id = "placeChip" value = {this.state.placeChip} className = "form-control" type = "text" onChange = { this.placeChip } ></input>
           </div>
 
           <div className={ checkGames > 0 ? 'form-group d-flex justify-content-end pr-2' : 'd-none' }>
