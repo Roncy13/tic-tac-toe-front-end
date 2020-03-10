@@ -275,6 +275,9 @@ export default class App extends Component {
                     <th className = "th">
                       Score
                     </th>
+                    <th className = "th">
+                      Room
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -289,6 +292,9 @@ export default class App extends Component {
                         </td>
                         <td>
                           { row.score}
+                        </td>
+                        <td>
+                          { row.room}
                         </td>
                       </tr>
                     ))
