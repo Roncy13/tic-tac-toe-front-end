@@ -259,11 +259,11 @@ export default class App extends Component {
               <table className="table w-100">
                 <thead>
                   <tr>
-                    <th class = "th"></th>
-                    <th class = "th">
+                    <th className = "th"></th>
+                    <th className = "th">
                       Name
                     </th>
-                    <th class = "th">
+                    <th className = "th">
                       Score
                     </th>
                   </tr>
