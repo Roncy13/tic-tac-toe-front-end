@@ -40,7 +40,6 @@ export default class App extends Component {
       game: {},
       room: "",
       placeChip: "",
-      name: "",
       players: {},
       turn: ""
     });
@@ -76,9 +75,13 @@ export default class App extends Component {
   }
 
   sendChip() {
-    const { room, placeChip } = this.state;
+    const { room, placeChip, socket } = this.state;
 
-    this.state.socket.emit("placeChip", { room, placeChip });
+    socket.emit("placeChip", { room, placeChip });
+
+    this.setState({
+      placeChip: ""
+    });
   }
 
   receivedPlacement() {
@@ -155,36 +158,47 @@ export default class App extends Component {
   render() {
 
     const { turn, players, game } = this.state;
+    const checkGames = Object.keys(game || {}).length;
 
     return (
-      <div className="App">
-        <ToastContainer />
-        Type here:
+      <div className="App row w-100">
+        <div className = "col-lg-12 col-md-12 mx-5 mt-2">
+          <ToastContainer />
+        </div>
         
-        <input className = "form-control" type = "text" defaultValue = { this.state.name } onChange = { this.stateName } ></input>
-     
-        <br/>
+        <div className = "col-lg-12 col-md-12 mx-5 mt-2">
+          <div className="form-group">
+            <label for="yourName">Your Name</label>
+            <input id = "yourName" value = {this.state.name} disabled = { checkGames === 0 ? false : true } className = "form-control" type = "text" defaultValue = { this.state.name } onChange = { this.stateName } ></input>
+          </div>
 
-        <input className = "form-control" type = "text" onChange = { this.addNumber } ></input>
-        <button defaultValue = { this.state.room } onClick = { this.sendRoomValue }>Send room</button>
-        <button onClick = { this.joinRoom }>Join room</button>
-        <br/>
+          <div className="form-group">
+            <label for="roomNo">Room</label>
+            <input id = "roomNo"  value = {this.state.room} disabled = { checkGames === 0 ? false : true } className = "form-control" type = "text" onChange = { this.addNumber } ></input>
+            </div>
 
-        <input className = "form-control" type = "text" defaultValue = { this.state.placeChip } onChange = { this.placeChip } ></input>
-        <button onClick = { this.sendChip }>Place Chip</button>
+          <div className= { checkGames === 0 ? 'form-group d-flex justify-content-end pr-2' : 'd-none' }>
+            <button className = "btn btn-success btn-md mr-1" onClick = { this.sendRoomValue }>Create room</button>
+            <button className = "btn btn-info btn-md" onClick = { this.joinRoom }>Join room</button>
+          </div>
 
-        <br />
-        <br />
-        <br />
-        <br />
+          <div className={ checkGames > 0 ? 'form-group' : 'd-none' }>
+            <label for="placeChip">Place Chip from 1 - 9</label>
+            <input id = "placeChip"  value = {this.state.placeChip} className = "form-control" type = "text" onChange = { this.placeChip } ></input>
+          </div>
 
-        <PlayerListing players={ players } turn = { turn }/>
-
-        <br />
-        <br />
-
-        <GameBoard  game = { game }/>
-
+          <div className={ checkGames > 0 ? 'form-group d-flex justify-content-end pr-2' : 'd-none' }>
+            <button className = "btn btn-info btn-warning" onClick = { this.sendChip }>Place Chip</button>
+          </div>
+        </div>
+        
+        <div className = "col-lg-12 col-md-12 mt-3 d-flex justify-content-center">
+          <PlayerListing players={ players } turn = { turn }/>
+        </div>
+        
+        <div className = "col-lg-12 col-md-12 mt-3 d-flex justify-content-center">
+          <GameBoard game = { game }/>
+        </div>
       </div>
     );
   } 
